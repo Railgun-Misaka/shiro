@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>register</title>
+<script type="text/javascript" src="../js/jquery/2.0.0/jquery.min.js"></script>
+</head>
+
+<body>
+<p style="text-align:center; font-size:25; margin-top:100px;">用户注册</p>
+<table style="margin:100px auto; table-layout:fixed; width:25%;">
+	<tr>
+		<td class="tabletitle">用户名：</td>
+		<td><input id="username" oncopy="return false" onpaste="return false" oncut="return false" onKeyUp="value=value.replace(/[\W]/g,'')"></td>
+		<td class="warning"></td>
+	</tr>
+	<tr>
+		<td class="tabletitle">密码：</td>
+		<td><input id="password" type="password"  oncopy="return false" onpaste="return false" oncut="return false" onKeyUp="value=value.replace(/[\W]/g,'')"></td>
+		<td class="warning"></td>
+	</tr>
+	<tr>
+		<td class="tabletitle">确认密码：</td>
+		<td><input id="confirm" type="password" oncopy="return false" onpaste="return false" oncut="return false" onKeyUp="value=value.replace(/[\W]/g,'')"></td>
+		<td class="warning"></td>
+	</tr>
+</table>
+<center><button type="button">提交</button></center>
+	
+<style>
+	.warning{
+		width:5%;
+	}
+	.tabletitle{
+		text-indent:80px;
+	}
+</style>
+
+<script>
+	function nospace(str){
+		var regS = new RegExp(" ","g");
+		return str.replace(regS, "");
+	}
+	function isempty(str){
+		if(str == "")
+			return true ;
+		return false ;
+	}
+	$("button").click(function(){
+		var username = nospace($("#username").val());
+		var password = nospace($("#password").val());
+		var confirm = nospace($("#confirm").val());	
+		if(isempty(username) || isempty(password) || isempty(confirm)){
+			alert("用户名密码不能为空！");
+			return ;
+		}
+		if(password != confirm){
+			alert("两次输入密码不一致！");
+			return ;
+		}
+		var url = "/register";
+		$.post(
+            url,
+            {"username":username, "password":password},
+            function(result){
+            	if(result == "success"){
+            		location="login.html";
+                }else{
+                	alert("注册失败！请重新填写注册信息");
+                }
+            }
+        );
+	})
+</script>
+</body>
+</html>

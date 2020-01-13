@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>login</title>
+<script type="text/javascript" src="../js/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+	<div style="text-align:center; margin-top:60px">用户登录</div>
+	<form class="login" style="margin-top:80px; width:300px; margin-left:auto; margin-right:auto" method="post">
+		<div style="text-align:center">账号：<input placeholder="请输入用户名" name="username" size="20"></div>
+		<div style="text-align:center; margin-top:20px; margin-bottom:20px">密码：<input type="password" placeholder="请输入密码" name="password" size="21"></div>
+		<center><button type="button" class="usersubmit">登录</button>&emsp;&emsp;<a style="text-decoration:none; color:blue" href="register.html">注册</a></center>
+	</form>
+</body>
+<script>
+	var submitnum = 0;
+	$("button.usersubmit").click(function(){
+		if(submitnum > 0)
+			return ;
+		var username = $("input[name='username']").val();
+		var password = $("input[name='password']").val();
+		submitnum++ ;
+		var url = "/login";
+		$.post(
+            url,
+            {"username":username, "password":password},
+            function(result){
+            	if(result == "success"){
+            		location="listusers.html";
+                }else{
+                	submitnum = 0;
+                	alert("用户名、密码错误！请重新输入");
+                }
+            }
+        );
+	})
+</script>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>listusers</title>
+</head>
+
+<script type="text/javascript" src="../js/vue/vue.min.js"></script>
+<script type="text/javascript" src="../js/fetch/fetch.min.js"></script>
+<script type="text/javascript" src="../js/jquery/2.0.0/jquery.min.js"></script>
+
+<body>
+	<nav><a href="/logout">注销</a></nav>
+	<table id="t1" style="margin:30px auto; width:50%; text-align:center">
+		<tr>
+			<th width="10%">uid</th><th width="35%">username</th><th width="35%">role</th width="10%"><th>delete</th><th width="10%">save</th>
+		</tr>
+		<tr v-for="user in users" :id="user.uid">
+			<td>{{user.uid}}</td>
+			<td>{{user.username}}</td>
+			<td>
+				<span @click="edit(user.uid, $event)" class="rolesview">
+					<span v-for="role,index in user.roles">{{((index==0)?"":"、") + role.rolename}}</span>
+				</span>
+				<span class="rolescheckbox" style="display:none" v-for="r in rs">{{r}}<input type="checkbox" :value="r" :name="r"></span>
+			</td>
+			<td><a href="javascript:;" @click="deleteuser(user.uid)">delete</a></td>
+			<td><a href="javascript:;" @click="save">save</a></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		new Vue({
+		    el:'table#t1',
+		    data:{
+			    users:[],
+				rs:["manager", "editor"],
+		    },
+			methods:{
+				deleteuser: function(uid){
+					if(!confirm("是否删除此用户？"))
+						return ;
+					var url = "/users/" + uid ;
+					fetch(url, {method: 'delete'}).then(function(response) {
+			            response.text().then(function (text) {
+			            	if(text == "success"){
+			            		$("tr#" + uid).hide();
+			            	}else if(text == "noAuth"){
+			            		alert("无修改权限！");
+			            	}else{
+			            		alert("删除失败！");
+			            	}
+			            })
+			        }).catch(function(err){
+			            console.log("Fetch错误:"+err);
+			        })
+				},
+				edit: function(uid, event){
+					var el = $(event.currentTarget);
+					el.hide();
+					var rolescheckbox = el.siblings();
+					rolescheckbox.show();
+					
+					var roles ;
+					var users = this.users
+					for(i in users)
+						if(users[i].uid == uid){
+							roles = users[i].roles;
+							break ;
+						}						
+					if(roles == null)
+						return ;
+					for(i in roles){
+						rolescheckbox.find("input[name=" + roles[i].rolename + "]").attr("checked", "checked");
+					}					
+				},
+				save: function(event){
+					var el = $(event.currentTarget);
+					var els = el.parent().siblings();
+					els.find(".rolesview").show();
+					els.find(".rolescheckbox").hide();
+				}
+			},
+		    mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+		    	self = this ;
+		    	var url = "/users" ;
+		        fetch(url).then(function(response) {
+		            response.json().then(function (jsonObject) {
+		            	//alert(JSON.stringify(jsonObject))
+		            	if(jsonObject == null)
+		            		return ;
+		            	self.users = jsonObject;
+		            })
+		        }).catch(function(err){
+		            console.log("Fetch错误:"+err);
+		        })
+		    }
+		})
+	</script>
+	<style>
+		tr{
+			height:30px;
+		}
+	</style>
+</body>
+</html>
