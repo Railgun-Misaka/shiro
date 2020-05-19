@@ -33,12 +33,12 @@ public interface RoleMapper {
 	 * @param id
 	 * @return
 	 */
-	@Select("SELECT * FROM role_ WHERE rid = #{id}")
+	@Select("SELECT * FROM role_ WHERE rid = #{rid}")
 	@Results({
 		@Result(property = "rid", column = "rid"),
 		@Result(property = "permissions", javaType = List.class, column = "rid",  many = @Many(select = "com.fly.shiro.mapper.PermissionMapper.listbyrole"))
 	}) 
-	public Role getbyid(int id) ;
+	public Role getbyid(int rid) ;
 	
 	/**
 	 * getbyname
@@ -71,12 +71,12 @@ public interface RoleMapper {
 	@Select("SELECT rolename FROM role_ r LEFT JOIN user_role ur ON r.rid = ur.rid WHERE ur.rid = #{rid}")
 	public Set<String> rolenames(int uid) ;
 	
-	@Delete("DELETE FROM role_ WHERE rid = #{id}")
-	public int deleteuser(int id) ;
+	@Delete("DELETE FROM role_ WHERE rid = #{rid}")
+	public int deleterole(int rid) ;
 	
-	@Insert("INSERT INTO role_ VALUES (#{rolename})")
-	public int adduser(Role role) ;
+	@Insert("INSERT INTO role_ VALUES (null, #{rolename})")
+	public int addrole(Role role) ;
 	
-	@Update("UPDATE role_ SET rolename = #{rolename} WHERE rid = #{id}")
+	@Update("UPDATE role_ SET rolename = #{rolename} WHERE rid = #{rid}")
 	public int update(Role role) ;
 }

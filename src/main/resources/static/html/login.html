@@ -14,8 +14,17 @@
 	</form>
 </body>
 <script>
+	//获取url参数中的值
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r != null) return decodeURI(r[2]);
+		return null;
+	}
+	
 	var submitnum = 0;
 	$("button.usersubmit").click(function(){
+		var redirecturl = GetQueryString("redirecturl");
 		if(submitnum > 0)
 			return ;
 		var username = $("input[name='username']").val();
@@ -27,7 +36,12 @@
             {"username":username, "password":password},
             function(result){
             	if(result == "success"){
-            		location="listusers.html";
+            		if(redirecturl != null){
+            			location = "/isAuthenticated?redirecturl=" + redirecturl;
+            			return ;
+            		}else
+            			location = "listusers.html";
+            		return;
                 }else{
                 	submitnum = 0;
                 	alert("用户名、密码错误！请重新输入");

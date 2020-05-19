@@ -55,7 +55,7 @@ public interface UserMapper {
 	@Delete("DELETE FROM user_ WHERE uid = #{uid}")
 	public int deleteuser(int uid) ;
 	
-	@Insert("INSERT INTO user_ VALUES (#{username}, #{password}, #{salt})")
+	@Insert("INSERT INTO user_ VALUES (null, #{username}, #{password}, #{salt})")
 	public int adduser(User user) ;
 	
 	@Update("UPDATE user_ SET password = #{password}, salt = #{salt} WHERE uid = #{uid}")

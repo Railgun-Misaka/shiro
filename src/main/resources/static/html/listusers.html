@@ -18,11 +18,11 @@
 		<tr v-for="user in users" :id="user.uid">
 			<td>{{user.uid}}</td>
 			<td>{{user.username}}</td>
-			<td>
-				<span @click="edit(user.uid, $event)" class="rolesview">
+			<td @click="edit(user.uid, $event)">
+				<span class="rolesview">
 					<span v-for="role,index in user.roles">{{((index==0)?"":"、") + role.rolename}}</span>
 				</span>
-				<span class="rolescheckbox" style="display:none" v-for="r in rs">{{r}}<input type="checkbox" :value="r" :name="r"></span>
+				<span class="rolescheckbox" style="display:none" v-for="r in rs">{{r.rolename}}<input type="checkbox" :value="r.rid" name="rids"></span>
 			</td>
 			<td><a href="javascript:;" @click="deleteuser(user.uid)">delete</a></td>
 			<td><a href="javascript:;" @click="save">save</a></td>
@@ -33,7 +33,7 @@
 		    el:'table#t1',
 		    data:{
 			    users:[],
-				rs:["manager", "editor"],
+				rs:[],
 		    },
 			methods:{
 				deleteuser: function(uid){
@@ -56,9 +56,8 @@
 				},
 				edit: function(uid, event){
 					var el = $(event.currentTarget);
-					el.hide();
-					var rolescheckbox = el.siblings();
-					rolescheckbox.show();
+					el.find(".rolesview").hide();
+					el.find(".rolescheckbox").show();
 					
 					var roles ;
 					var users = this.users
@@ -78,17 +77,28 @@
 					var els = el.parent().siblings();
 					els.find(".rolesview").show();
 					els.find(".rolescheckbox").hide();
+
 				}
 			},
 		    mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
 		    	self = this ;
-		    	var url = "/users" ;
-		        fetch(url).then(function(response) {
+		        fetch("/users").then(function(response) {
 		            response.json().then(function (jsonObject) {
 		            	//alert(JSON.stringify(jsonObject))
 		            	if(jsonObject == null)
 		            		return ;
 		            	self.users = jsonObject;
+		            })
+		        }).catch(function(err){
+		            console.log("Fetch错误:"+err);
+		        })
+		        
+		        fetch("/roles").then(function(response) {
+		            response.json().then(function (jsonObject) {
+		            	//alert(JSON.stringify(jsonObject))
+		            	if(jsonObject == null)
+		            		return ;
+		            	self.rs = jsonObject ;
 		            })
 		        }).catch(function(err){
 		            console.log("Fetch错误:"+err);

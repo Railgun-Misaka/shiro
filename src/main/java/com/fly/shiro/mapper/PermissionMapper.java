@@ -26,7 +26,7 @@ public interface PermissionMapper {
 	@Delete("DELETE FROM permission_ WHERE pid = #{id}")
 	public int deletepermission(int id) ;
 	
-	@Insert("INSERT INTO permission_ VALUES (#{permission})")
+	@Insert("INSERT INTO permission_ VALUES (null, #{permission})")
 	public int addpermission(Permission permission) ;
 	
 	@Update("UPDATE permission_ SET permission = #{permission} WHERE pid = #{id}")

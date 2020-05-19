@@ -3,11 +3,13 @@ package com.fly.shiro.config;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 
 import com.fly.shiro.realm.DatabaseRealm ;
@@ -22,10 +24,16 @@ public class ShiroConfig {
 	}
 	
 	@Bean
-    public SecurityManager securityManager(DatabaseRealm realm){
+    public SecurityManager securityManager(DatabaseRealm realm, SessionManager sessionManager){
 		DefaultSecurityManager securitymanager = new DefaultSecurityManager() ;
 		securitymanager.setRealm(realm);
+		securitymanager.setSessionManager(sessionManager);
         return securitymanager;
+    }
+	
+    @Bean
+    public SessionManager sessionManager(){
+    	return new DefaultWebSessionManager();
     }
 	
 	@Bean
